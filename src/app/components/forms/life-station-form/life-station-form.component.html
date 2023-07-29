@@ -1,0 +1,39 @@
+<div class="center-content">
+    <mat-list>
+        <mat-list-item>
+          <button mat-raised-button color="primary" [style.min-width.px]="180"
+            (click)="openCoordinateSelection()">Koordinaten auswählen
+            </button>     
+        </mat-list-item>
+    </mat-list>
+</div>
+<form [formGroup]="stolpersteinLifeStationForm">
+    <div class="center-content-always">
+        <mat-list role="list">
+            <mat-list-item role="listitem">
+                
+                <mat-form-field class="width-limiter" [style.width.px]="textFieldWidth">
+                    <mat-label>Geographische Koordinaten der Lebensstation</mat-label>
+                    <input matInput readonly formControlName="coordinates" required>
+                </mat-form-field>
+                
+            </mat-list-item>
+            <mat-list-item role="listitem">
+                <mat-form-field class="width-limiter" [style.width.px]="textFieldWidth">
+                    <mat-label>Name der Lebensstation</mat-label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+            </mat-list-item>
+        </mat-list>
+    </div>
+    <div class="center-content-always">
+        <mat-form-field appearance="fill" class="width-limiter-textarea" [style.width.px]="textFieldWidth">
+            <mat-label>Information zur Lebensstation</mat-label>
+            <textarea matInput formControlName="text" [style.height.px]="200"></textarea>
+        </mat-form-field>
+    </div>    
+</form>
+<div class="button-container"> 
+    <button mat-raised-button [disabled]="!stolpersteinLifeStationForm.valid" (click)="emitSaveLifeStation()" class="button-space-to-right"><mat-icon>save</mat-icon>Speichern</button>
+    <button mat-raised-button (click)="emitCancel()">Abbrechen</button>
+</div>

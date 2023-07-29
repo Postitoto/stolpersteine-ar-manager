@@ -1,0 +1,19 @@
+<div>
+    <button mat-raised-button color="accent" (click)="navigateBack()" class="button-space-to-right">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+</div>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+<div *ngIf="!loaded then loading else form"></div>
+<ng-template #loading>
+    <mat-spinner></mat-spinner>
+</ng-template>
+<ng-template #form>
+    <app-stolperstein-form [assignedLocation]="stolpersteinLocation" [stolperstein]="existingStolperstein"></app-stolperstein-form>
+</ng-template>
+    
+    
+
+

@@ -1,0 +1,4 @@
+{
+    "backendUrl": "http://localhost:8000",
+    "backendUrlProd": "https://cryptic-depths-19636.herokuapp.com"
+}

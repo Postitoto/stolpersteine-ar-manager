@@ -1,0 +1,7 @@
+<div class="center-content-always">
+    <button mat-raised-button type="button" [disabled]="!authService.loginStatus()" class="square-button-large nav-button" routerLink="./locations">
+        <p class="round-text-box" *ngIf="!authService.loginStatus()" >Bitte loggen sie sich ein!</p>
+        <p *ngIf="authService.loginStatus()">Start</p>
+        </button>
+</div>
+

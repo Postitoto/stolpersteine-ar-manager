@@ -1,0 +1,10 @@
+<h2 mat-dialog-title>Delete {{data.itemName}}</h2>
+<div mat-dialog-content>
+    Are you sure you want to delete {{data.itemName}} 
+    <div class="text-highlighted" *ngIf="data.itemDescription">{{data.itemDescription}}</div>
+    permanently?
+</div>
+<div mat-dialog-actions class="button-container">
+    <button mat-raised-button color="warn" [mat-dialog-close]="true">Yes</button>
+    <button mat-raised-button color="primary" mat-dialog-close>No</button>
+</div>

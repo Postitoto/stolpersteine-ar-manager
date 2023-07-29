@@ -1,0 +1,28 @@
+<div class="textbox-form-container">
+    <h3> {{textbox ? 'Textbox bearbeiten' : 'Neue Textbox anlegen' }} </h3>
+    <form [formGroup]="stolpersteinTextboxForm">
+        <div class="center-content-always">
+            <mat-list role="list">
+                <mat-list-item role="listitem">
+                    <mat-form-field class="width-limiter" [style.width.px]="textFieldWidth">
+                        <mat-label>Titel</mat-label>
+                        <input matInput formControlName="title" required>
+                    </mat-form-field>
+                </mat-list-item>
+                <div class="center-content-always">
+                    <mat-form-field appearance="fill" class="width-limiter-textarea" [style.width.px]="textFieldWidth">
+                        <mat-label>Inhalt</mat-label>
+                        <textarea matInput formControlName="content" [style.height.px]="200" required></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-list>
+        </div>
+    </form>
+    <div class="button-container">
+        <button mat-raised-button [disabled]="!stolpersteinTextboxForm.valid" (click)="emitSaveTextbox()"
+            class="button-space-to-right">
+            <mat-icon>save</mat-icon> {{textbox ? 'Textbox speichern' : 'Textbox hinzufügen'}} 
+        </button>
+        <button mat-raised-button (click)="emitCancel()">Abbrechen</button>
+    </div>
+</div>

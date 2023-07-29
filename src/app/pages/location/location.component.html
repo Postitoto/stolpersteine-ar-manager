@@ -1,0 +1,38 @@
+<div>
+    <button mat-raised-button color="accent" routerLink="/locations/list" class="nav-button">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button color="accent" routerLink=".." class="nav-button">
+        <mat-icon>home</mat-icon>
+    </button>
+    <button mat-raised-button class="nav-button" (click)="addStolperstein()" color="primary">Stolperstein
+        hinzufügen</button>
+    <button mat-raised-button class="nav-button" (click)="deleteLocation()" color="warn">Löschen</button>
+</div>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+<h2>
+    {{location?.name}}
+</h2>
+<div cdkDropList class="drag-drop-list center-content-always" (cdkDropListDropped)="dropStolperstein($event)">
+    <div cdkDrag class="drag-drop-item width-limiter center-content-always"
+        *ngFor="let stolperstein of selectedStolpersteine; last as last; index as i">
+        <div class="stolperstein-item">
+            <span>{{stolperstein.name}}</span>
+            <div class="buttons-align-right">
+                <button mat-raised-button class="btn-stolperstein-action nav-button text-button height-limiter"
+                    (click)="deleteStolperstein(stolperstein,i)" color="warn">Löschen</button>
+                <button mat-raised-button class="btn-stolperstein-action text-button height-limiter"
+                    (click)="editStolperstein(stolperstein)" color="accent">Bearbeiten</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="width-limiter">
+    <button mat-raised-button *ngIf="orderArray.length > 0" color="primary" (click)="saveStolpersteinOrder()">Reihenfolge
+        Speichern</button>
+</div>
+
+
+

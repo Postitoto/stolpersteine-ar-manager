@@ -1,0 +1,8 @@
+<div id="stolpersteine_map" (mouseenter)="setMapToFocus()" (click)="getCoordinates($event)" (dragStart)="cancelEmit()"
+    class="map" tabindex="1"></div>
+
+<div id="informationOverlay" class="informationOverlay">
+    <p> {{selectedLocation?.name}} </p>
+    <div class="btn-edit"><button mat-raised-button color="accent" (click)="openLocationDetails(selectedLocation)">Bearbeiten</button></div>
+    
+</div>

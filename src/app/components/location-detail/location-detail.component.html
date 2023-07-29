@@ -1,0 +1,32 @@
+<mat-expansion-panel (opened)="onPanelOpen()">
+    <mat-expansion-panel-header>
+        <mat-panel-title>
+            {{location?.name}}
+        </mat-panel-title>
+    </mat-expansion-panel-header>
+    <button mat-raised-button class="button-space-to-right" (click)="deleteLocation()" color="warn">Löschen</button>
+    <button mat-raised-button class="button-space-to-right" (click)="addStolperstein()" color="primary">Stolperstein hinzufügen</button>
+    <mat-divider></mat-divider>
+    <div *ngIf="showStolpersteineList then steineList else loading"></div>
+    <ng-template #steineList>
+        <div cdkDropList class="drag-drop-list" (cdkDropListDropped)="dropStolperstein($event)">
+            <div cdkDrag class="drag-drop-item"
+                *ngFor="let stolperstein of selectedStolpersteine; last as last; index as i">
+                <div class="space-between">
+                    <span>{{stolperstein.name}}</span>
+                    <div class="buttons-align-right">
+                        <button mat-raised-button class="btn-stolperstein-action button-space-to-right height-limiter"
+                            (click)="deleteStolperstein(stolperstein,i)" color="warn">Löschen</button>
+                        <button mat-raised-button class="btn-stolperstein-action height-limiter"
+                            (click)="editStolperstein(stolperstein)" color="accent">Bearbeiten</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+    <ng-template #loading>
+        <mat-spinner></mat-spinner>
+    </ng-template>
+    <button mat-raised-button color="primary" (click)="saveStolpersteinOrder()">Reihenfolge
+        Speichern</button>
+</mat-expansion-panel>

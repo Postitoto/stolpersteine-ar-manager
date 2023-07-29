@@ -1,0 +1,47 @@
+.left-padding {
+    padding-left: 24px;
+}
+
+img.photo-preview {
+    object-fit: cover;
+    max-height: 190px;
+    max-width: 190px;
+}
+
+.left-align {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.relation-headline {
+    width: 120px;
+    flex-shrink: 0;
+}
+
+.relation-content-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.spacer {
+    height: 20px;
+}
+
+.spacer-large {
+    height: 28px;
+}
+
+.asset-label {
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+}
+
+.asset-divider {
+    margin: 8px 0;
+    border-top-width: 2px;
+}
+
+.fab-button {
+    margin: 10px;
+}

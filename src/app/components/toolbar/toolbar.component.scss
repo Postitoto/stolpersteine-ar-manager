@@ -1,0 +1,25 @@
+.app-title {
+    margin: auto 8px;
+    max-width: 50vw;
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+}
+
+.toolbar {
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+}
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+}

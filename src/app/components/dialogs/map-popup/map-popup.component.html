@@ -1,0 +1,11 @@
+<div mat-dialog-content class="popup-container">
+    <app-map-view></app-map-view>
+    <p><strong>Breitengrad:  </strong> {{coords.latitude}}</p>
+    <p><strong>Längengrad:   </strong> {{coords.longitude}}</p>
+
+</div>
+<div mat-dialog-actions class="center-content-always">
+    <button mat-raised-button color="primary" [mat-dialog-close]="coords">Bestätigen</button>
+    <button mat-raised-button color="accent" mat-dialog-close>Abbrechen</button>
+</div>
+

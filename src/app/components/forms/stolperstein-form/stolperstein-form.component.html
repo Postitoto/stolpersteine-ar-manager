@@ -1,0 +1,274 @@
+<mat-stepper orientation="vertical">
+    <!--Basic Information-->
+    <mat-step [stepControl]="stolpersteinBasics" label="Grundlegende Informationen">
+        <form [formGroup]="stolpersteinBasics">
+            <div class="center-content">
+                <mat-list role="list">
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="true" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name" required>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item role="listitem" class="auto-height">
+                        <mat-form-field aria-readonly aria-required="true" class="auto-height width-limiter"
+                            [style.width.px]="textFieldWidth">
+                            <mat-label>Ort des Stolpersteins</mat-label>
+                            <input (click)="setHintHidden()" readonly matInput
+                                [value]="stolpersteinBasics.value.location.name" required>
+                            <mat-hint [ngStyle]="{color: '#ff0000'}" [hidden]="isHintHidden">Wird automatisch ausgefüllt
+                            </mat-hint>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <div class="spacer" [hidden]="isHintHidden"></div>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Geburtsdatum</mat-label>
+                            <input matInput readonly formControlName="birthdate" [matDatepicker]="pickerBorn">
+                            <mat-datepicker-toggle matSuffix [for]="pickerBorn"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerBorn [startAt]="startDateBorn"></mat-datepicker>
+                            <mat-hint>Datum mit dem Kalendersymbol auswählen</mat-hint>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <div class="spacer-large"></div>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Todesdatum</mat-label>
+                            <input matInput readonly formControlName="deathdate" [matDatepicker]="pickerDied">
+                            <mat-datepicker-toggle matSuffix [for]="pickerDied"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerDied [startAt]="startDateDied"></mat-datepicker>
+                            <mat-hint>Datum mit dem Kalendersymbol auswählen</mat-hint>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <div class="spacer-large"></div>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Geburtsort</mat-label>
+                            <input matInput formControlName="birthplace">
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Todesort</mat-label>
+                            <input matInput formControlName="deathplace">
+                        </mat-form-field>
+                    </mat-list-item>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Grund der Verfolgung</mat-label>
+                            <mat-select formControlName="reason_for_persecution" [value]="persecutionChoices[0].key">
+                                <div *ngFor="let option of persecutionChoices">
+                                    <mat-option [value]="option.key">{{option.displayValue}}</mat-option>
+                                </div>
+                            </mat-select>
+                        </mat-form-field>
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </form>
+    </mat-step>
+    <!--Assets-->
+    <mat-step [stepControl]="stolpersteinAssets" label="Dateien Hochladen">
+        <form [formGroup]="stolpersteinAssets">
+            <div class="center-content">
+                <mat-list role="list">
+                    <mat-list-item role="listitem" class="auto-height">
+                        <mat-label matLine class="spacing-right asset-label">Foto: </mat-label>
+                        <div matLine *ngIf="stolpersteinAssets.value.photo then showImage else showEmptyMsg"></div>
+                        <ng-template #showEmptyMsg>
+                            <span class="margin-top-bottom"><em>---Kein Bild---</em></span>
+                        </ng-template>
+                        <ng-template #showImage>
+                            <img class="photo-preview margin-top-bottom" [src]="imagePreviewUrl">
+                            <p *ngIf="stolpersteinAssets.value.photoName"> {{stolpersteinAssets.value.photoName}} </p>
+                        </ng-template>
+                        <div class="center-content" matLine>
+                            <button mat-raised-button color="primary" (click)="imageInput.click()">
+                                <mat-icon>upload</mat-icon>Neues Foto auswählen
+                            </button>
+                        </div>
+                        <input #imageInput hidden type="file" (change)="onImageSelect($event)" accept=".jpg, .png, .svg"
+                            formControlName="photo">
+
+                    </mat-list-item>
+                    <mat-divider class="asset-divider"></mat-divider>
+                    <mat-list-item role="listitem" class="auto-height">
+                        <mat-label matLine class="spacing-right asset-label">Audio:</mat-label>
+                        <p matLine *ngIf="stolpersteinAssets.value.audio"> {{stolpersteinAssets.value.audioName}} </p>
+                        <div class="center-content" matLine>
+                            <button mat-raised-button class="button-space-to-right" color="primary"
+                                (click)="audioInput.click()">
+                                <mat-icon>upload</mat-icon>Neue Audiodatei auswählen
+                            </button>
+                            <button *ngIf="stolpersteinAssets.value.audio" mat-raised-button color="primary"
+                                (click)="audioDownload($event)">
+                                <mat-icon>download</mat-icon>Datei herunterladen
+                            </button>
+                        </div>
+                        <input hidden #audioInput type="file" (change)="onAudioSelect($event)"
+                            accept=".mp3, .wav, .m4a, .wma" formControlName="audio">
+                    </mat-list-item>
+                </mat-list>
+            </div>
+        </form>
+    </mat-step>
+    <!--Additional Information-->
+    <mat-step [stepControl]="stolpersteinTexts" label="Zusätzliche Information">
+        <mat-accordion multi="false" class="center-content">
+            <form [formGroup]="stolpersteinTexts">
+                <mat-expansion-panel class="width-limiter-textarea" [style.width.px]="textFieldWidth">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Allgemeine Informationen
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="center-content-always">
+                        <mat-list role="list">
+                            <mat-list-item role="listitem" class="auto-height">
+                                <mat-form-field appearance="fill" aria-required="true" class="width-limiter-textarea"
+                                    [style.width.px]="textFieldWidth">
+                                    <textarea matInput formControlName="info_text" [style.height.px]="200"></textarea>
+                                </mat-form-field>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </mat-expansion-panel>
+                <mat-expansion-panel class="width-limiter-textarea" [style.width.px]="textFieldWidth">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>
+                            Informationen zur Familie
+                        </mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="center-content-always">
+                        <mat-list role="list">
+                            <mat-list-item role="listitem" class="auto-height">
+                                <mat-form-field appearance="fill" aria-required="true" class="width-limiter-textarea"
+                                    [style.width.px]="textFieldWidth">
+                                    <textarea matInput formControlName="family_text" [style.height.px]="200"></textarea>
+                                </mat-form-field>
+                            </mat-list-item>
+                        </mat-list>
+                    </div>
+                </mat-expansion-panel>
+                <!--Custom Textboxes-->
+                <div class="center-content" *ngIf="!enterTextbox">
+                    <mat-list role="list">
+                        <mat-divider></mat-divider>
+                        <mat-list-item class="auto-height width-limiter-textarea" role="listitem"
+                            *ngFor="let textbox of this.stolpersteinTextboxList; let i=index">
+                            <div class="relation-headline">
+                                <h2>{{textbox.title}}</h2>
+                            </div>
+
+                            <div class="relation-content-container">
+                                <p class="spacing-left spacing-right">{{sliceLongText(textbox.content, 240)}}</p>
+                                <div class="button-container">
+                                    <button mat-raised-button class="button-space-to-right" color="warn"
+                                        (click)="deleteTextbox(textbox, i)">Löschen</button>
+                                    <button mat-raised-button color="accent"
+                                        (click)="editTextbox(textbox)">Bearbeiten</button>
+                                </div>
+
+                            </div>
+                            <mat-divider></mat-divider>
+                        </mat-list-item>
+                    </mat-list>
+
+                </div>
+                <div class="center-content" *ngIf="enterTextbox"></div>
+                <div class="center-content-always">
+                    <button class="fab-button" *ngIf="!enterTextbox" mat-fab (click)="toggleTextboxForm(true)" color="primary">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                </div>
+                <div *ngIf="enterTextbox">
+                    <app-textbox-form (closeForm)="toggleTextboxForm($event)" (newTextbox)="addTextbox($event)"
+                        [textbox]="textbox" [textFieldWidth]="textFieldWidth"></app-textbox-form>
+                </div>
+            </form>
+        </mat-accordion>
+    </mat-step>
+    <!--Relations-->
+    <mat-step label="Beziehungen">
+        <div class="center-content" *ngIf="!enterRelation">
+            <mat-list role="list">
+                <mat-divider></mat-divider>
+                <mat-list-item class="auto-height" role="listitem"
+                    *ngFor="let relation of this.stolpersteinRelationsList; let i=index">
+                    <div class="relation-headline">
+                        <h2>{{relation.related_stolperstein.name}}</h2>
+                        <span>{{getRelationChoice(relation.type)}}</span>
+                    </div>
+
+                    <div class="relation-content-container">
+                        <p class="spacing-left spacing-right">{{relation.text}}</p>
+                        <div class="button-container">
+                            <button mat-raised-button class="button-space-to-right" color="warn"
+                                (click)="deleteRelation(relation, i)">Löschen</button>
+                            <button mat-raised-button color="accent"
+                                (click)="editRelation(relation)">Bearbeiten</button>
+                        </div>
+
+                    </div>
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </mat-list>
+
+        </div>
+        <div class="center-content" *ngIf="enterRelation"></div>
+        <div class="button-container">
+            <button *ngIf="!enterRelation" mat-raised-button (click)="toggleRelationForm(true)"
+                color="primary">Beziehung hinzufügen</button>
+        </div>
+        <div *ngIf="enterRelation">
+            <h3>Neue Beziehung anlegen</h3>
+            <app-relation-form (closeForm)="toggleRelationForm($event)" (newRelation)="addNewRelation($event)"
+                [relation]="stolpersteinRelation" [otherStolpersteine]="otherStolpersteine"
+                [textFieldWidth]="textFieldWidth">
+            </app-relation-form>
+        </div>
+    </mat-step>
+    <!--Life stations-->
+    <mat-step label="Lebensstationen">
+        <div class="center-content" *ngIf="!enterLifeStation">
+            <mat-list role="list">
+                <mat-divider></mat-divider>
+                <mat-list-item class="auto-height" role="listitem"
+                    *ngFor="let lifeStation of this.stolpersteinLifeStationsList; last as last; let i=index">
+                    <div class="relation-headline">
+                        <h2>{{lifeStation.name}}</h2>
+                    </div>
+
+                    <div class="relation-content-container">
+                        <p class="spacing-left spacing-right">{{lifeStation.text}}</p>
+                        <div class="button-container">
+                            <button mat-raised-button class="button-space-to-right" color="warn"
+                                (click)="deleteLifeStation(lifeStation, i)">Löschen</button>
+                            <button mat-raised-button color="accent"
+                                (click)="editLifeStation(lifeStation)">Bearbeiten</button>
+                        </div>
+                    </div>
+                    <mat-divider></mat-divider>
+                </mat-list-item>
+            </mat-list>
+
+        </div>
+        <div class="center-content" *ngIf="enterLifeStation"></div>
+        <div class="button-container">
+            <button *ngIf="!enterLifeStation" mat-raised-button (click)="toggleLifeStationForm(true)"
+                color="primary">Lebensstation hinzufügen</button>
+        </div>
+        <div *ngIf="enterLifeStation">
+            <h3>Neue Lebensstation hinzufügen</h3>
+            <app-life-station-form (closeForm)="toggleLifeStationForm($event)"
+                (newLifeStation)="addNewLifeStation($event)" [lifeStation]="lifeStation" [stolperstein]="stolperstein"
+                [textFieldWidth]="textFieldWidth"></app-life-station-form>
+        </div>
+    </mat-step>
+</mat-stepper>
+<!--Buttons-->
+<div class="left-padding">
+    <button mat-raised-button color="primary" [disabled]="!allValid()" (click)="saveAndUpload()">
+        <mat-icon>save</mat-icon>Speichern
+    </button>
+</div>

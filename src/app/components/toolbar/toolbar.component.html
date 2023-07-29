@@ -1,0 +1,16 @@
+<mat-toolbar class="toolbar">
+    <mat-toolbar-row class="space-between">
+        <div class="toolbar-group">
+            <button mat-mini-fab color="primary" routerLink="/">
+                <mat-icon>home</mat-icon>
+            </button>
+            <span class="app-title">Stolpersteine Manager</span>
+        </div>
+        <div class="toolbar-group">
+            <button *ngIf="!authService.loginStatus()" mat-raised-button (click)="openLogin()">Login</button>
+            <button *ngIf="authService.loginStatus()" mat-raised-button (click)="logout()">
+                Logout: {{authService.getUserName()}}
+            </button>
+        </div>
+    </mat-toolbar-row>
+</mat-toolbar>

@@ -1,0 +1,22 @@
+<!--TODO: Search Bar to filter locations-->
+<span class="spacing-right">
+    <button mat-raised-button color="accent" routerLink="/" class="button-space-to-right nav-button">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button color="primary" (click)="toggleLocationForm()" mat-raised-button class="button-space-to-right nav-button">
+        <div *ngIf="!isVisible then addText else closeText"></div>
+        <ng-template #addText>Neuen Ort hinzufügen</ng-template>
+        <ng-template #closeText>Eingabe schließen</ng-template>
+    </button>
+    <button mat-raised-button color="primary" routerLink="./list" class="button-space-to-right nav-button">
+        Liste aller Orte
+    </button>
+</span>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+
+<app-location-form (locationEmitter)="addLocationToList($event)" *ngIf="isVisible"></app-location-form>
+<div *ngIf="locationCoordinates">
+    <app-map-view [locationCoordinates]="locationCoordinates"></app-map-view>
+</div>

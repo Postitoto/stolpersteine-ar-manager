@@ -1,0 +1,30 @@
+.foreground {
+    z-index: 1000;
+}
+
+.clickable {
+    cursor: pointer;
+}
+
+.warn-text {
+    color: red;
+}
+
+.login-screen-container {
+    @media (max-width: 768px) {
+        height: 50vh !important;
+    }
+    @media (min-width: 769px) {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+.custom-list-item {
+    height: auto !important;
+    width: 100% !important;
+}
+
+.login-form-field {
+    width: 100%;
+}

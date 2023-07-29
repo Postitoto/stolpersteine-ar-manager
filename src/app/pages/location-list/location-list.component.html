@@ -1,0 +1,14 @@
+<span class="spacing-right">
+    <button mat-raised-button color="accent" routerLink=".." class="button-space-to-right">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+</span>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+
+<div class="width-limiter">
+    <div *ngFor="let location of locations; let i = index" class="center-content-always">
+        <button mat-raised-button (click)="navigateToDetailView(location.coordinates)" class="location-button"> {{location.name}} </button>
+    </div>
+</div>

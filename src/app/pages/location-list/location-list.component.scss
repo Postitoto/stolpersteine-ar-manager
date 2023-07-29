@@ -1,0 +1,18 @@
+.small-padding-vertical {
+    padding: 8px 0;
+}
+
+.width-limiter {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+.location-button {
+    margin: 2px 0;
+    width: 80%;
+    height: 80px;
+    font-size: larger;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

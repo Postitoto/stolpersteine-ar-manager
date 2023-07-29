@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "stolperstein-manager": {
+      "hosting": {
+        "stolpersteine-manager": [
+          "stolperstein-manager"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "stolperstein-manager"
+  }
+}

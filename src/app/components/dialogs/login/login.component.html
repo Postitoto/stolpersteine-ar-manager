@@ -1,0 +1,34 @@
+<div>
+<h2 mat-dialog-title>Login</h2>
+<div mat-dialog-content class="login-screen-container">
+    Geben Sie Benutzername und Passwort ein
+    <form [formGroup]="loginForm">
+        <div class="center-content-always">
+            <mat-list role="list" class="custom-list-item">
+                <mat-list-item role="listitem" class="custom-list-item">
+                    <mat-form-field appearance="outline" class="login-form-field">
+                        <mat-label>Benutzername</mat-label>
+                        <input matInput formControlName="username" required>
+                    </mat-form-field>
+                </mat-list-item>
+                <mat-list-item role="listitem" class="custom-list-item">
+                    <mat-form-field appearance="outline" class="login-form-field">
+                        <mat-label>Passwort</mat-label>
+                        <input  matInput [type]="showPassword" formControlName="password" required>
+                        <mat-icon *ngIf="isPwVisible" matSuffix class="foreground clickable" (click)="toggleShowPassword()">visibility</mat-icon>
+                        <mat-icon *ngIf="!isPwVisible" matSuffix class="foreground clickable" (click)="toggleShowPassword()">visibility_off</mat-icon>
+                    </mat-form-field>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </form>
+    <div *ngIf="showLoadingSpinner" class="center-content-always">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div *ngIf="showWarnMsg" class="warn-text">Benutzername oder Passwort falsch!</div>
+</div>
+<div mat-dialog-actions class="button-container">
+    <button mat-raised-button color="primary" type="submit" [disabled]="!loginForm.valid" (keyup.enter)="sendLogin()" (click)="sendLogin()">Login</button>
+    <button mat-raised-button color="accent" mat-dialog-close>Abbrechen</button>
+</div>
+</div>

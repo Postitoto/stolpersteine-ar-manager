@@ -1,0 +1,36 @@
+.nav-button {
+    border: none;
+    box-shadow: none !important;
+    cursor: pointer;
+    background-image: url(/assets/general/stolperstein_background.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: auto;
+    height: auto;
+    // background-color: goldenrod;
+    font-size: 2rem;
+    font-weight: 550;
+}
+
+.square-button-large {
+    @media (max-width: 768px) {
+        width: 80vw;
+        height: 80vw;
+    }
+    @media (min-width: 769px) {
+        width: 600px;
+        height: 600px;
+    }
+}
+
+.round-text-box {
+    color: black !important;
+    white-space: pre-wrap;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.mat-raised-button.mat-button-disabled {
+    cursor: url(../../../assets/general/baseline_do_not_disturb_black_24dp.png), default;
+}

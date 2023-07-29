@@ -1,0 +1,10 @@
+.textbox-form-container {
+    --padding-textbox-container: 16px;
+    max-width: calc(600px - 2 * var(--padding-textbox-container));
+    border-radius: 16px;
+    margin: 10px 0;
+    padding: var(--padding-textbox-container);
+    box-shadow: 2px 2px 3px 3px rgba(0,0,0,0.36);
+    -webkit-box-shadow: 2px 2px 3px 3px rgba(0,0,0,0.36);
+    -moz-box-shadow: 2px 2px 3px 3px rgba(0,0,0,0.36);
+}
