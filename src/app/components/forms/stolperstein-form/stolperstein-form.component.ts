@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,16 +16,18 @@ import { ConfirmationComponent } from '../../dialogs/confirmation/confirmation.c
 import { saveAs } from 'file-saver'
 import * as moment from 'moment';
 import { TextBox } from 'src/app/models/textbox';
+import { coordinateRelationship } from 'ol/extent';
 
 @Component({
   selector: 'app-stolperstein-form',
   templateUrl: './stolperstein-form.component.html',
   styleUrls: ['./stolperstein-form.component.scss']
 })
-export class StolpersteinFormComponent implements OnInit {
+export class StolpersteinFormComponent implements OnInit, OnChanges {
 
   @Input() stolperstein?: Stolperstein;
   @Input() assignedLocation?: StolpersteinLocation;
+  @Input() locationFormLoc?: StolpersteinLocationTransfer;
   locationValid: boolean = false;
   stolpersteinBasics: FormGroup;
   stolpersteinAssets: FormGroup;
@@ -142,6 +144,14 @@ export class StolpersteinFormComponent implements OnInit {
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(this.locationFormLoc){
+      this.setLocation(this.locationFormLoc)
+    }
+      
+      console.log(this.stolpersteinBasics)
+  }
+
   @HostListener('window:resize')
   resizeListener(event: any) {
     this.textFieldWidth = window.innerWidth * 0.7;
@@ -174,6 +184,10 @@ export class StolpersteinFormComponent implements OnInit {
 
   getLocation() {
     return this.stolpersteinBasics.get('location');
+  }
+
+  setLocation(value: StolpersteinLocationTransfer) {
+    this.stolpersteinBasics.get('location')?.setValue(AppUtils.locTransferToLoc(value));
   }
 
   onImageSelect(event: any) {

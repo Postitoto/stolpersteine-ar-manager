@@ -14,8 +14,7 @@
                         <mat-form-field aria-readonly aria-required="true" class="auto-height width-limiter"
                             [style.width.px]="textFieldWidth">
                             <mat-label>Ort des Stolpersteins</mat-label>
-                            <input (click)="setHintHidden()" readonly matInput
-                                [value]="stolpersteinBasics.value.location.name" required>
+                            <input (click)="setHintHidden()" readonly matInput [value]="stolpersteinBasics.value.location.name" required>
                             <mat-hint [ngStyle]="{color: '#ff0000'}" [hidden]="isHintHidden">Wird automatisch ausgefüllt
                             </mat-hint>
                         </mat-form-field>

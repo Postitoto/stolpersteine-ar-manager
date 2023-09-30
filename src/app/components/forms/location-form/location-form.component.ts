@@ -8,6 +8,7 @@ import { DataService } from 'src/app/services/data/data.service';
 import { MapInteractionService } from 'src/app/services/map-interaction/map-interaction.service';
 import { Logger } from 'src/app/util-config/logger';
 
+
 @Component({
   selector: 'app-location-form',
   templateUrl: './location-form.component.html',
@@ -15,27 +16,46 @@ import { Logger } from 'src/app/util-config/logger';
 })
 export class LocationFormComponent implements OnInit{
 
+  isStolpersteinDialogOpen = false;
+
   locationForm: FormGroup;
   @Output() locationEmitter = new EventEmitter()
+  @Output() showStolperSteinEmitter = new EventEmitter()
 
   constructor(private formbuilder: FormBuilder,
               private dataService: DataService,
               private snackbar: MatSnackBar,
               private mapInteraction: MapInteractionService) { 
     this.locationForm = this.formbuilder.group({
+      'name': ['', [Validators.required, Validators.maxLength(100)]],
       'coordinates_lat': ['', [Validators.required, Validators.maxLength(18)]],
       'coordinates_lon': ['', [Validators.required, Validators.maxLength(19)]],
-      'name': ['', [Validators.maxLength(100)]]
     });
   }
   
   ngOnInit(): void {
     this.mapInteraction.getCoordinates().subscribe(coordinates => {
-      this.locationForm.setValue({'name': this.locationForm.get('name')?.value, 
+      this.locationForm.setValue({
+        'name': this.locationForm.get('name')?.value, 
         'coordinates_lat': coordinates.latitude, 
-        'coordinates_lon': coordinates.longitude});
+        'coordinates_lon': coordinates.longitude,
+      });
     })
-    
+  }
+
+  showStolpersteinForm() {
+    // Save the location 
+    //this.saveAndSend;
+
+    // Open the Stolperstein Dialog
+    this.isStolpersteinDialogOpen = true;
+
+    const newLocation = {
+      name: this.locationForm.get('name')?.value,
+      coordinates: this.locationForm.get('coordinates_lat')?.value + ',' + this.locationForm.get('coordinates_lon')?.value
+    } as StolpersteinLocationTransfer;
+    //this.saveAndSend();
+    this.showStolperSteinEmitter.emit(newLocation);
   }
 
   saveAndSend() {

@@ -3,26 +3,28 @@
         <mat-list role="list">
             <mat-list-item role="listitem">
                 <mat-form-field aria-required="true">
-                    <mat-label>Name</mat-label>
+                    <mat-label>Adresse</mat-label>
                     <input matInput formControlName="name">
                 </mat-form-field>
             </mat-list-item>
             <mat-list-item role="listitem">
                 <mat-form-field class="spacing-right" aria-required="true">
-                    <mat-label>Latitude</mat-label>
+                    <mat-label>Breitengrad</mat-label>
                     <input matInput formControlName="coordinates_lat" required>
                 </mat-form-field>
                 <mat-form-field aria-required="true">
-                    <mat-label>Longitude</mat-label>
+                    <mat-label>Längengrad</mat-label>
                     <input matInput formControlName="coordinates_lon" required>
                 </mat-form-field>
             </mat-list-item>
-            <mat-list-item>
-                <div>
-                    <button mat-raised-button color="primary" type="submit" (click)="saveAndSend()" [disabled]="!locationForm.valid">Save</button>
-                </div>
-            </mat-list-item>
         </mat-list>  
+    </div>
+    <div class="center-content">
+        <div>
+            <button mat-raised-button color="primary" type="submit" (click)="saveAndSend()" [disabled]="!locationForm.valid || isStolpersteinDialogOpen">Nur Standort speichern</button>
+            <span class="button-spacing"></span>
+            <button mat-raised-button color="accent" type="submit" (click)="showStolpersteinForm()" [disabled]="!locationForm.valid || isStolpersteinDialogOpen">Stolperstein hinzufügen</button>
+        </div>
     </div>
 </form>
 

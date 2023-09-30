@@ -16,7 +16,18 @@
     <mat-divider></mat-divider>
 </div>
 
-<app-location-form (locationEmitter)="addLocationToList($event)" *ngIf="isVisible"></app-location-form>
-<div *ngIf="locationCoordinates">
+<!-- Map -->
+<div *ngIf="locationCoordinates && !isStolpersteinSelectionActive">
     <app-map-view [locationCoordinates]="locationCoordinates"></app-map-view>
 </div>
+<div class="small-padding-vertical" *ngIf="isVisible && !isStolpersteinSelectionActive">
+    <mat-divider></mat-divider>
+</div>
+
+<app-location-form (locationEmitter)="addLocationToList($event)" (showStolperSteinEmitter)="showStolpersteinForm($event)" *ngIf="isVisible"></app-location-form>
+
+<div class="small-padding-vertical" *ngIf="isVisible && isStolpersteinSelectionActive">
+    <mat-divider></mat-divider>
+</div>
+
+<app-stolperstein-form [locationFormLoc]="selectedLocation" *ngIf="isVisible && isStolpersteinSelectionActive"></app-stolperstein-form>

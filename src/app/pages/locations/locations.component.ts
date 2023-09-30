@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Coordinates } from 'src/app/models/coordinates';
 import { StolpersteinLocation, StolpersteinLocationTransfer } from 'src/app/models/stolpersteinLocation';
 import { DataService } from 'src/app/services/data/data.service';
@@ -13,9 +13,12 @@ import { AppUtils } from 'src/app/util-config/app-utils';
 export class LocationsComponent implements OnInit {
 
   isVisible = false;
+  isStolpersteinSelectionActive = false;
+  selectedLocation?: StolpersteinLocationTransfer;
   locations: StolpersteinLocation[];
   locationCoordinates?: Coordinates[];
   coordinatesForForm?: Coordinates;
+  changeDetector?: ChangeDetectorRef;
   constructor(private dataService: DataService,
     private mapInteraction: MapInteractionService) {
     this.locations = [];
@@ -26,11 +29,20 @@ export class LocationsComponent implements OnInit {
       this.locations = locs;
       this.locationCoordinates = this.locations.map(loc => loc.coordinates);
     })
-
   }
 
   toggleLocationForm() {
     this.isVisible = !this.isVisible;
+    this.isStolpersteinSelectionActive = false;
+  }
+
+  showStolpersteinForm(value: StolpersteinLocationTransfer) {
+    if(value){
+      this.isStolpersteinSelectionActive = true;
+      this.selectedLocation = value;
+    }
+    
+    this.changeDetector?.detectChanges
   }
 
   addLocationToList(newLocation: StolpersteinLocationTransfer) {
