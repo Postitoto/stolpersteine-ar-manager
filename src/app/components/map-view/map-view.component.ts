@@ -1,4 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -17,6 +19,9 @@ import { DataService } from 'src/app/services/data/data.service';
 import { StolpersteinLocation } from 'src/app/models/stolpersteinLocation';
 import { Router } from '@angular/router';
 import { AppUtils } from 'src/app/util-config/app-utils';
+import { ConfirmationComponent } from '../dialogs/confirmation/confirmation.component';
+import { Observable, of } from 'rxjs';
+
 @Component({
   selector: 'app-map-view',
   templateUrl: './map-view.component.html',
@@ -28,12 +33,15 @@ export class MapViewComponent implements OnInit{
   map: Map | undefined;
   isValidEmit = true;
   selectedLocation?: StolpersteinLocation;
+  selectedIndex?: number;
   private informationOverlay?: Overlay;
   private infoHTMLElement?: HTMLElement;
   
   constructor(private mapInteraction: MapInteractionService,
               private dataService: DataService,
-              private router: Router) { 
+              private router: Router,
+              private dialog: MatDialog,
+              private snackbar: MatSnackBar) { 
     this.coordinateEmitter = new EventEmitter<Coordinates>();
   }
 
@@ -132,16 +140,19 @@ export class MapViewComponent implements OnInit{
     const features = this.map?.getFeaturesAtPixel(event.pixel);
     if (!features!![0] && this.informationOverlay) {
       this.selectedLocation = undefined;
+      this.selectedIndex = undefined;
       this.map?.removeOverlay(this.informationOverlay);
     }
     this.map?.forEachFeatureAtPixel(event.pixel, (feature) => {
       const coords = feature.get('info').coordinates;
       if (this.informationOverlay) {
         this.selectedLocation = undefined;
+        this.selectedIndex = undefined;
         this.map?.removeOverlay(this.informationOverlay);
       }
       this.dataService.getLocations().subscribe(locations => {
         this.selectedLocation = locations.find(loc => loc.coordinates.latitude == coords.latitude && loc.coordinates.longitude == coords.longitude);
+        this.selectedIndex = locations.findIndex(loc => loc === this.selectedLocation);
           this.informationOverlay = new Overlay({
             element: this.infoHTMLElement
           });
@@ -168,6 +179,30 @@ export class MapViewComponent implements OnInit{
       return;
     } else {
       this.router.navigateByUrl(`/locations/${AppUtils.coordinatesToString(location.coordinates)}`);
+    }
+  }
+
+  deleteLocation(location: StolpersteinLocation | undefined) {
+    if(location) {
+      const dialogRef = this.dialog.open(ConfirmationComponent, {
+        data: {itemName: 'location', itemDescription: location.name}
+      });
+      dialogRef.afterClosed().subscribe((closeData) => {
+        if (closeData) {
+          this.dataService.deleteLocation(location.coordinates).subscribe(() => {
+            if(this.selectedIndex && this.selectedIndex !== -1){
+              this.mapInteraction.removeMapMarker(this.selectedIndex);
+            }
+            this.snackbar.open('Deleted location: '+location.name, 'Close', {duration: 4000});
+          }, error => console.error(error));
+        }
+        return;
+      });
+    }
+
+     // Close the overlay
+     if(this.informationOverlay){
+      this.map?.removeOverlay(this.informationOverlay);
     }
   }
 }
