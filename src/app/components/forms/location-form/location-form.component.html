@@ -4,7 +4,7 @@
             <mat-list-item role="listitem">
                 <mat-form-field aria-required="true">
                     <mat-label>Adresse</mat-label>
-                    <input matInput formControlName="name">
+                    <input matInput formControlName="name"required>
                 </mat-form-field>
             </mat-list-item>
             <mat-list-item role="listitem">
@@ -21,9 +21,9 @@
     </div>
     <div class="center-content">
         <div>
-            <button mat-raised-button color="primary" type="submit" (click)="saveAndSend()" [disabled]="!locationForm.valid || isStolpersteinDialogOpen">Nur Standort speichern</button>
+            <button mat-raised-button color="primary" type="submit" (click)="saveAndSend()" [disabled]="!locationForm.valid">Nur Standort speichern</button>
             <span class="button-spacing"></span>
-            <button mat-raised-button color="accent" type="submit" (click)="showStolpersteinForm()" [disabled]="!locationForm.valid || isStolpersteinDialogOpen">Stolperstein hinzufügen</button>
+            <button mat-raised-button color="accent" type="submit" (click)="addStolperStein()" [disabled]="!locationForm.valid">Stolperstein hinzufügen</button>
         </div>
     </div>
 </form>

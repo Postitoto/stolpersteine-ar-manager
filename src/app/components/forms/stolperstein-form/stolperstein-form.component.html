@@ -107,6 +107,24 @@
                         <input hidden #audioInput type="file" (change)="onAudioSelect($event)"
                             accept=".mp3, .wav, .m4a, .wma" formControlName="audio">
                     </mat-list-item>
+
+                    <mat-divider class="asset-divider"></mat-divider>
+                    <mat-list-item role="listitem" class="auto-height">
+                        <mat-label matLine class="spacing-right asset-label">Video:</mat-label>
+                        <p matLine *ngIf="stolpersteinAssets.value.video"> {{stolpersteinAssets.value.videoName}} </p>
+                        <div class="center-content" matLine>
+                            <button mat-raised-button class="button-space-to-right" color="primary"
+                                (click)="videoInput.click()">
+                                <mat-icon>upload</mat-icon>Neue Videodatei auswählen
+                            </button>
+                            <button *ngIf="stolpersteinAssets.value.video" mat-raised-button color="primary"
+                                (click)="videoDownload($event)">
+                                <mat-icon>download</mat-icon>Datei herunterladen
+                            </button>
+                        </div>
+                        <input hidden #videoInput type="file" (change)="onVideoSelect($event)"
+                            accept=".mp4, .mov, .wmv, .avi" formControlName="video">
+                    </mat-list-item>
                 </mat-list>
             </div>
         </form>

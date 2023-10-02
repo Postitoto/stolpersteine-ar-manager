@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,11 +23,10 @@ import { coordinateRelationship } from 'ol/extent';
   templateUrl: './stolperstein-form.component.html',
   styleUrls: ['./stolperstein-form.component.scss']
 })
-export class StolpersteinFormComponent implements OnInit, OnChanges {
+export class StolpersteinFormComponent implements OnInit {
 
   @Input() stolperstein?: Stolperstein;
   @Input() assignedLocation?: StolpersteinLocation;
-  @Input() locationFormLoc?: StolpersteinLocationTransfer;
   locationValid: boolean = false;
   stolpersteinBasics: FormGroup;
   stolpersteinAssets: FormGroup;
@@ -40,7 +39,8 @@ export class StolpersteinFormComponent implements OnInit, OnChanges {
   isFilesChanged = {
     general: false,
     photo: false,
-    audio: false
+    audio: false,
+    video: false
   };
   otherStolpersteine: Stolperstein[] = [];
   isHintHidden = true;
@@ -80,7 +80,9 @@ export class StolpersteinFormComponent implements OnInit, OnChanges {
       'photoName': [''],
       'photo': new FormData(),
       'audioName': [''],
-      'audio': new FormData()
+      'audio': new FormData(),
+      'videoName': [''],
+      'video': new FormData()
     });
     this.stolpersteinTexts = this.formbuilder.group({
       'info_text': [''],
@@ -142,14 +144,6 @@ export class StolpersteinFormComponent implements OnInit, OnChanges {
     }
 
 
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(this.locationFormLoc){
-      this.setLocation(this.locationFormLoc)
-    }
-      
-      console.log(this.stolpersteinBasics)
   }
 
   @HostListener('window:resize')
@@ -214,6 +208,22 @@ export class StolpersteinFormComponent implements OnInit, OnChanges {
   audioDownload(event: any) {
     this.fileDownload.downloadFile(this.stolpersteinAssets.value.audio).subscribe(response => {
       saveAs(response, this.stolpersteinAssets.value.audioName)
+    });
+  }
+
+  onVideoSelect(event: any) {
+    const file = event.target.files[0];
+    if(file) {
+      this.stolpersteinAssets.value.video = file;
+      this.stolpersteinAssets.value.videoName = file.name;
+      this.isFilesChanged.general = true;
+      this.isFilesChanged.audio = true;
+    }
+  }
+
+  videoDownload(event: any) {
+    this.fileDownload.downloadFile(this.stolpersteinAssets.value.video).subscribe(response => {
+      saveAs(response, this.stolpersteinAssets.value.videoName)
     });
   }
 
@@ -466,6 +476,10 @@ export class StolpersteinFormComponent implements OnInit, OnChanges {
       if (this.isFilesChanged.audio) {
         stolpersteinAssets.append('audioName', this.stolpersteinAssets.value.audioName);
         stolpersteinAssets.append('audio', this.stolpersteinAssets.value.audio);
+      }
+      if(this.isFilesChanged.video) {
+        stolpersteinAssets.append('videoName', this.stolpersteinAssets.value.videoName);
+        stolpersteinAssets.append('video', this.stolpersteinAssets.value.video);
       }
     }
     return stolpersteinAssets;
