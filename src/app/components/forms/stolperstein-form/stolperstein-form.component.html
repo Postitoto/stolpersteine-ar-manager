@@ -22,6 +22,16 @@
                     <div class="spacer" [hidden]="isHintHidden"></div>
                     <mat-list-item role="listitem">
                         <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Verlegungsdatum</mat-label>
+                            <input matInput readonly formControlName="placementdate" [matDatepicker]="pickerPlaced">
+                            <mat-datepicker-toggle matSuffix [for]="pickerPlaced"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerPlaced [startAt]="startDatePlaced"></mat-datepicker>
+                            <mat-hint>Datum mit dem Kalendersymbol auswählen</mat-hint>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <div class="spacer-large"></div>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
                             <mat-label>Geburtsdatum</mat-label>
                             <input matInput readonly formControlName="birthdate" [matDatepicker]="pickerBorn">
                             <mat-datepicker-toggle matSuffix [for]="pickerBorn"></mat-datepicker-toggle>
@@ -112,6 +122,7 @@
                     <mat-list-item role="listitem" class="auto-height">
                         <mat-label matLine class="spacing-right asset-label">Video:</mat-label>
                         <p matLine *ngIf="stolpersteinAssets.value.video"> {{stolpersteinAssets.value.videoName}} </p>
+                        <p matLine [ngStyle]="{color: '#ff0000'}" *ngIf="isVideoFileToBig">Die Datei ist zu groß. Max. Dateigröße ist 10MB</p>
                         <div class="center-content" matLine>
                             <button mat-raised-button class="button-space-to-right" color="primary"
                                 (click)="videoInput.click()">

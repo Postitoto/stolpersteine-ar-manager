@@ -3,4 +3,6 @@ export interface FileContainer {
     photo?: File | string;
     audioName?: string;
     audio?: File | string;
+    videoName?: string;
+    video?: File | string;
 }

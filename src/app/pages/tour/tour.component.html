@@ -1,0 +1,40 @@
+<div>
+    <button mat-raised-button color="accent" routerLink="/tours/list" class="nav-button">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button color="accent" routerLink=".." class="nav-button">
+        <mat-icon>home</mat-icon>
+    </button>
+    <button mat-raised-button color="primary">
+        Standort hinzufügen
+    </button>
+</div>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+<h2>
+    {{selectedTour?.name}}
+</h2>
+<div cdkDropList class="drag-drop-list center-content-always" (cdkDropListDropped)="dropLocation($event)">
+    <div cdkDrag class="drag-drop-item width-limiter center-content-always" *ngFor="let location of locationsInTour; last as last; index as i">
+        <div class="location-container">
+            <button mat-raised-button class="location-button">{{ location.name }}</button>
+
+            <button mat-icon-button class="dropdown-button" (click)="toggleDetails(location.id)">
+                <mat-icon>keyboard_arrow_down</mat-icon>
+            </button>
+
+             <!-- Dropdown field -->
+            <div *ngIf="exapandedLocationId === location.id" class="dropdown-content">
+                <p>Some Content</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="width-limiter">
+    <button mat-raised-button *ngIf="orderArray.length > 0" color="primary" (click)="saveLocationOrder()">
+        Reihenfolge 
+    </button>
+</div>

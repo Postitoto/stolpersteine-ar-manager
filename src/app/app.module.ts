@@ -45,6 +45,10 @@ import { LocationComponent } from './pages/location/location.component';
 import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { GERMAN_CUSTOM_DATE_FORMAT } from './util-config/custom-date-format';
 import { TextboxFormComponent } from './components/forms/textbox-form/textbox-form.component';
+import { TourListComponent } from './pages/tour-list/tour-list.component';
+import { TourComponent } from './pages/tour/tour.component';
+import { AllLocationsPopupComponent } from './components/dialogs/all-locations-popup/all-locations-popup.component';
+import { AddLocationsPopupComponent } from './components/dialogs/add-locations-popup/add-locations-popup.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +68,11 @@ import { TextboxFormComponent } from './components/forms/textbox-form/textbox-fo
     LocationDetailComponent,
     MapPopupComponent,
     LocationComponent,
-    TextboxFormComponent
+    TextboxFormComponent,
+    TourListComponent,
+    TourComponent,
+    AllLocationsPopupComponent,
+    AddLocationsPopupComponent
   ],
   imports: [
     BrowserModule,

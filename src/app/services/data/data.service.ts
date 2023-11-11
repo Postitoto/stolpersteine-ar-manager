@@ -4,6 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Coordinates } from 'src/app/models/coordinates';
 import { Stolperstein } from 'src/app/models/stolperstein';
+import { Tour } from 'src/app/models/tour';
 
 import { StolpersteinLocation, StolpersteinLocationTransfer } from 'src/app/models/stolpersteinLocation';
 import { AppConfig } from 'src/app/util-config/app-config';
@@ -48,6 +49,18 @@ export class DataService {
 
   getStolpersteinById(id: number) {
     return this.http.get<Stolperstein>(`${AppConfig.getBackendUrl()}/api/stolpersteine/${id}`) as Observable<Stolperstein>;
+  }
+
+  getAllTours() {
+    return this.http.get<Tour[]>(`${AppConfig.getBackendUrl()}/api/get-tours/`) as Observable<Tour[]>;
+  }
+
+  getTourById(id: number) {
+    return this.http.get<Tour>(`${AppConfig.getBackendUrl()}/api/get-tour/${id}`) as Observable<Tour>;
+  }
+
+  getLocationsInTour(id: number) {
+    return this.http.get<StolpersteinLocation[]>(`${AppConfig.getBackendUrl()}/api/get-tour-locations/${id}`) as Observable<StolpersteinLocation[]>;
   }
 
   addLocation(requestBody: StolpersteinLocationTransfer) {

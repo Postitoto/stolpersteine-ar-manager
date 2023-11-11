@@ -1,0 +1,17 @@
+<span class="spacing-right">
+    <button mat-raised-button color="accent" routerLink="/locations" class="button-space-to-right">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" routerLink="" class="button-space-to-right">
+        Neue Tour erstellen
+    </button>
+</span>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+
+<div class="width-limiter">
+    <div *ngFor="let tour of tours; let i = index" class="center-content-always">
+        <button mat-raised-button (click)="navigateToDetailView(tour)" class="location-button"> {{tour.name}} </button>
+    </div>
+</div>
