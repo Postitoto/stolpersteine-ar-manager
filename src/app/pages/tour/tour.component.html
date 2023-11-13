@@ -5,7 +5,7 @@
     <button mat-raised-button color="accent" routerLink=".." class="nav-button">
         <mat-icon>home</mat-icon>
     </button>
-    <button mat-raised-button color="primary">
+    <button mat-raised-button color="primary" (click)="openLocationSelectionPopup()">
         Standort hinzufügen
     </button>
 </div>
@@ -16,13 +16,17 @@
     {{selectedTour?.name}}
 </h2>
 <div cdkDropList class="drag-drop-list center-content-always" (cdkDropListDropped)="dropLocation($event)">
-    <div cdkDrag class="drag-drop-item width-limiter center-content-always" *ngFor="let location of locationsInTour; last as last; index as i">
-        <div class="location-container">
-            <button mat-raised-button class="location-button">{{ location.name }}</button>
-
-            <button mat-icon-button class="dropdown-button" (click)="toggleDetails(location.id)">
-                <mat-icon>keyboard_arrow_down</mat-icon>
-            </button>
+    <div cdkDrag class="drag-drop-item width-limiter center-content-always" *ngFor="let location of locationsInTour; last as last; index as i"  class="tour-container">
+        <div class="location-item">
+            <div>
+                <button mat-raised-button class="location-button" (click)="toggleDetails(location.id)">
+                    {{ location.name }}
+                </button>
+                <button mat-raised-button class="delete-button" (click)="removeLocationFromTour(location)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </div>
+            
 
              <!-- Dropdown field -->
             <div *ngIf="exapandedLocationId === location.id" class="dropdown-content">
@@ -34,7 +38,10 @@
 
 
 <div class="width-limiter">
-    <button mat-raised-button *ngIf="orderArray.length > 0" color="primary" (click)="saveLocationOrder()">
-        Reihenfolge 
+    <button mat-raised-button color="primary" (click)="saveSelection()">
+        Speichern 
+    </button>
+    <button mat-raised-button color="accent" routerLink="/tours/list" class="nav-button">
+        Abbrechen
     </button>
 </div>

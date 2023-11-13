@@ -12,10 +12,10 @@ export class TourListComponent implements OnInit {
 
   tours: Tour[] = []
 
-  constructor(private data: DataService, private router: Router) { }
+  constructor(private dataService: DataService, private router: Router) { }
 
   ngOnInit(): void {
-    this.data.getAllTours().subscribe(tours => this.tours = tours);
+    this.dataService.getAllTours().subscribe(tours => this.tours = tours);
   }
 
   navigateToDetailView(tour: Tour) { 

@@ -47,8 +47,8 @@ import { GERMAN_CUSTOM_DATE_FORMAT } from './util-config/custom-date-format';
 import { TextboxFormComponent } from './components/forms/textbox-form/textbox-form.component';
 import { TourListComponent } from './pages/tour-list/tour-list.component';
 import { TourComponent } from './pages/tour/tour.component';
-import { AllLocationsPopupComponent } from './components/dialogs/all-locations-popup/all-locations-popup.component';
 import { AddLocationsPopupComponent } from './components/dialogs/add-locations-popup/add-locations-popup.component';
+import { TourFormComponent } from './components/forms/tour-form/tour-form.component';
 
 @NgModule({
   declarations: [
@@ -71,8 +71,8 @@ import { AddLocationsPopupComponent } from './components/dialogs/add-locations-p
     TextboxFormComponent,
     TourListComponent,
     TourComponent,
-    AllLocationsPopupComponent,
-    AddLocationsPopupComponent
+    AddLocationsPopupComponent,
+    TourFormComponent
   ],
   imports: [
     BrowserModule,

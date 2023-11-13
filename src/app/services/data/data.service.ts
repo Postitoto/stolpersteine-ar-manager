@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Coordinates } from 'src/app/models/coordinates';
 import { Stolperstein } from 'src/app/models/stolperstein';
-import { Tour } from 'src/app/models/tour';
+import { Tour, TourLocation } from 'src/app/models/tour';
 
 import { StolpersteinLocation, StolpersteinLocationTransfer } from 'src/app/models/stolpersteinLocation';
 import { AppConfig } from 'src/app/util-config/app-config';
@@ -59,10 +59,14 @@ export class DataService {
     return this.http.get<Tour>(`${AppConfig.getBackendUrl()}/api/get-tour/${id}`) as Observable<Tour>;
   }
 
-  getLocationsInTour(id: number) {
-    return this.http.get<StolpersteinLocation[]>(`${AppConfig.getBackendUrl()}/api/get-tour-locations/${id}`) as Observable<StolpersteinLocation[]>;
+  getTourLocations(id: number) {
+    return this.http.get<TourLocation[]>(`${AppConfig.getBackendUrl()}/api/get-tour-locations/${id}`) as Observable<TourLocation[]>;
   }
 
+  getLocationsInTour(id: number) {
+    return this.http.get<StolpersteinLocation[]>(`${AppConfig.getBackendUrl()}/api/get-locations-in-tour/${id}`) as Observable<StolpersteinLocation[]>;
+  }
+   
   addLocation(requestBody: StolpersteinLocationTransfer) {
     return this.http.post(`${AppConfig.getBackendUrl()}/api/add-location/`, requestBody);
   }
@@ -85,6 +89,14 @@ export class DataService {
 
   uploadStolpersteinAssets(stolpersteinId: number, assets: any) {
     return this.http.post(`${AppConfig.getBackendUrl()}/api/assets/${stolpersteinId}`, assets);
+  }
+
+  editTourLocations(tourId: number, locations: any) {
+    return this.http.post(`${AppConfig.getBackendUrl()}/api/edit-tour-locations/${tourId}`, locations)
+  }
+
+  removeLocationsFromTour(tourId: number, Locations: any) {
+    //return this.http.delete(``)
   }
 
   deleteStolperstein(coordinates: Coordinates | string, steinId: string) {

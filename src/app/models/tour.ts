@@ -7,5 +7,13 @@ import { TextBox } from "./textbox";
 export interface Tour {
     id: number,
     name: string,
-    locations?: StolpersteinLocation[]
+    locations?: number[]
+}
+
+export interface TourLocation {
+    id: number,
+    order: number,
+    tour_id: number,
+    location_id: number,
+    is_active: boolean,
 }
