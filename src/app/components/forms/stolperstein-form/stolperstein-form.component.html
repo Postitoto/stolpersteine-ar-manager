@@ -14,13 +14,22 @@
                         <mat-form-field aria-readonly aria-required="true" class="auto-height width-limiter"
                             [style.width.px]="textFieldWidth">
                             <mat-label>Ort des Stolpersteins</mat-label>
-                            <input (click)="setHintHidden()" readonly matInput
-                                [value]="stolpersteinBasics.value.location.name" required>
+                            <input (click)="setHintHidden()" readonly matInput [value]="stolpersteinBasics.value.location.name" required>
                             <mat-hint [ngStyle]="{color: '#ff0000'}" [hidden]="isHintHidden">Wird automatisch ausgefüllt
                             </mat-hint>
                         </mat-form-field>
                     </mat-list-item>
                     <div class="spacer" [hidden]="isHintHidden"></div>
+                    <mat-list-item role="listitem">
+                        <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
+                            <mat-label>Verlegungsdatum</mat-label>
+                            <input matInput readonly formControlName="placementdate" [matDatepicker]="pickerPlaced">
+                            <mat-datepicker-toggle matSuffix [for]="pickerPlaced"></mat-datepicker-toggle>
+                            <mat-datepicker #pickerPlaced [startAt]="startDatePlaced"></mat-datepicker>
+                            <mat-hint>Datum mit dem Kalendersymbol auswählen</mat-hint>
+                        </mat-form-field>
+                    </mat-list-item>
+                    <div class="spacer-large"></div>
                     <mat-list-item role="listitem">
                         <mat-form-field aria-required="false" class="width-limiter" [style.width.px]="textFieldWidth">
                             <mat-label>Geburtsdatum</mat-label>
@@ -107,6 +116,25 @@
                         </div>
                         <input hidden #audioInput type="file" (change)="onAudioSelect($event)"
                             accept=".mp3, .wav, .m4a, .wma" formControlName="audio">
+                    </mat-list-item>
+
+                    <mat-divider class="asset-divider"></mat-divider>
+                    <mat-list-item role="listitem" class="auto-height">
+                        <mat-label matLine class="spacing-right asset-label">Video:</mat-label>
+                        <p matLine *ngIf="stolpersteinAssets.value.video"> {{stolpersteinAssets.value.videoName}} </p>
+                        <p matLine [ngStyle]="{color: '#ff0000'}" *ngIf="isVideoFileToBig">Die Datei ist zu groß. Max. Dateigröße ist 10MB</p>
+                        <div class="center-content" matLine>
+                            <button mat-raised-button class="button-space-to-right" color="primary"
+                                (click)="videoInput.click()">
+                                <mat-icon>upload</mat-icon>Neue Videodatei auswählen
+                            </button>
+                            <button *ngIf="stolpersteinAssets.value.video" mat-raised-button color="primary"
+                                (click)="videoDownload($event)">
+                                <mat-icon>download</mat-icon>Datei herunterladen
+                            </button>
+                        </div>
+                        <input hidden #videoInput type="file" (change)="onVideoSelect($event)"
+                            accept=".mp4, .mov, .wmv, .avi" formControlName="video">
                     </mat-list-item>
                 </mat-list>
             </div>

@@ -1,0 +1,33 @@
+<form [formGroup]="tourForm">
+    <div class="width-limiter-textarea">
+        <mat-list role="list">
+            <mat-list-item role="listitem">
+                <mat-form-field aria-required="true">
+                    <mat-label>Name</mat-label>
+                    <input matInput formControlName="name" required>
+                </mat-form-field>
+            </mat-list-item>
+        </mat-list>  
+    </div>
+    <mat-expansion-panel class="width-limiter-textarea center-content-always" [style.width.px]="500">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Beschreibung</mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="center-content-always">
+            <mat-list role="list">
+                <mat-list-item role="listitem" class="auto-height">
+                    <mat-form-field appearance="fill" aria-required="true" class="width-limiter-textarea" [style.width.px]="500">
+                        <textarea matInput formControlName="description" [style.height.px]="200"></textarea>
+                    </mat-form-field>
+                </mat-list-item>
+            </mat-list>
+        </div>
+    </mat-expansion-panel>
+    <div class="center-content">
+        <div>
+            <button mat-raised-button color="primary" (click)="createTourObject()">Bestätigen</button>
+            <span class="button-spacing"></span>
+            <button mat-raised-button color="warn" mat-dialog-close>Abbrechen</button>
+        </div>
+    </div>
+</form>

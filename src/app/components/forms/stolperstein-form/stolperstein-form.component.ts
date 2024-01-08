@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -16,16 +16,22 @@ import { ConfirmationComponent } from '../../dialogs/confirmation/confirmation.c
 import { saveAs } from 'file-saver'
 import * as moment from 'moment';
 import { TextBox } from 'src/app/models/textbox';
+import { coordinateRelationship } from 'ol/extent';
+import { Subject } from 'rxjs';
+import { takeUntil, takeWhile, filter } from 'rxjs/operators';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-stolperstein-form',
   templateUrl: './stolperstein-form.component.html',
   styleUrls: ['./stolperstein-form.component.scss']
 })
-export class StolpersteinFormComponent implements OnInit {
+export class StolpersteinFormComponent implements OnInit, OnDestroy {
 
   @Input() stolperstein?: Stolperstein;
   @Input() assignedLocation?: StolpersteinLocation;
+  destroy = new Subject<void>();
+
   locationValid: boolean = false;
   stolpersteinBasics: FormGroup;
   stolpersteinAssets: FormGroup;
@@ -38,16 +44,19 @@ export class StolpersteinFormComponent implements OnInit {
   isFilesChanged = {
     general: false,
     photo: false,
-    audio: false
+    audio: false,
+    video: false
   };
   otherStolpersteine: Stolperstein[] = [];
   isHintHidden = true;
   enterRelation = false;
   enterLifeStation = false;
   enterTextbox = false;
+  isVideoFileToBig = false;
   stolpersteinRelation?: StolpersteinRelation;
   lifeStation?: Lifestation;
   textbox?: TextBox;
+  startDatePlaced = moment("1982-01-01")
   startDateBorn = moment("1900-01-01");
   startDateDied = moment("1942-01-01");
   public persecutionChoices = [
@@ -68,6 +77,7 @@ export class StolpersteinFormComponent implements OnInit {
     this.stolpersteinBasics = this.formbuilder.group({
       'name': ['', [Validators.required, Validators.maxLength(100)]],
       'location': ['', Validators.required],
+      'placementdate': [],
       'birthdate': [],
       'deathdate': [],
       'birthplace': [''],
@@ -78,7 +88,9 @@ export class StolpersteinFormComponent implements OnInit {
       'photoName': [''],
       'photo': new FormData(),
       'audioName': [''],
-      'audio': new FormData()
+      'audio': new FormData(),
+      'videoName': [''],
+      'video': new FormData()
     });
     this.stolpersteinTexts = this.formbuilder.group({
       'info_text': [''],
@@ -99,6 +111,7 @@ export class StolpersteinFormComponent implements OnInit {
       this.stolpersteinBasics.setValue({
         'name': this.stolperstein?.name,
         'location': this.assignedLocation,
+        'placementdate': this.stolperstein?.placementdate ? moment(this.stolperstein.placementdate) : null,
         'birthdate': this.stolperstein?.birthdate ? moment(this.stolperstein.birthdate) : null,
         'deathdate': this.stolperstein?.deathdate ? moment(this.stolperstein.deathdate) : null,
         'birthplace': this.stolperstein?.birthplace ? this.stolperstein.birthplace : '',
@@ -110,6 +123,8 @@ export class StolpersteinFormComponent implements OnInit {
         'photo': this.stolperstein?.files?.photo ? this.stolperstein.files.photo : null,
         'audioName': this.stolperstein?.files?.audioName ? this.stolperstein.files.audioName : null,
         'audio': this.stolperstein?.files?.audio ? this.stolperstein.files.audio : null,
+        'videoName': this.stolperstein?.files?.videoName ? this.stolperstein.files.videoName : null,
+        'video': this.stolperstein?.files?.video ? this.stolperstein.files.video : null,
       });
       this.stolpersteinTexts.setValue({
         'info_text': this.stolperstein?.info_text ? this.stolperstein.info_text : '',
@@ -140,6 +155,11 @@ export class StolpersteinFormComponent implements OnInit {
     }
 
 
+  }
+
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   @HostListener('window:resize')
@@ -176,6 +196,10 @@ export class StolpersteinFormComponent implements OnInit {
     return this.stolpersteinBasics.get('location');
   }
 
+  setLocation(value: StolpersteinLocationTransfer) {
+    this.stolpersteinBasics.get('location')?.setValue(AppUtils.locTransferToLoc(value));
+  }
+
   onImageSelect(event: any) {
     const file = event.target.files[0];
     this.imagePreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(URL.createObjectURL(file));
@@ -197,9 +221,36 @@ export class StolpersteinFormComponent implements OnInit {
     }
   }
 
+  onVideoSelect(event: any) {
+    this.isVideoFileToBig = false;
+    const file = event.target.files[0];
+    if(file) {
+      // Check file size because Cloudinary only allows up to 100MB in its free plan
+      const fileSizeInMB = (file.size / 1024) / 1024;
+      if(fileSizeInMB > 100) {
+        this.isVideoFileToBig = true;
+        this.stolpersteinAssets.value.video = null;
+        this.stolpersteinAssets.value. videoName = null;
+        this.isFilesChanged.video = false;
+        return;
+      }
+
+      this.stolpersteinAssets.value.video = file;
+      this.stolpersteinAssets.value.videoName = file.name;
+      this.isFilesChanged.general = true;
+      this.isFilesChanged.video = true;
+    }
+  }
+
   audioDownload(event: any) {
     this.fileDownload.downloadFile(this.stolpersteinAssets.value.audio).subscribe(response => {
       saveAs(response, this.stolpersteinAssets.value.audioName)
+    });
+  }
+
+  videoDownload(event: any) {
+    this.fileDownload.downloadFile(this.stolpersteinAssets.value.video).subscribe(response => {
+      saveAs(response, this.stolpersteinAssets.value.videoName)
     });
   }
 
@@ -207,7 +258,9 @@ export class StolpersteinFormComponent implements OnInit {
     const protoStolperstein = this.createProtoStolperstein();
     const stolpersteinAssets = this.createStolpersteinAssets();
     Logger.consoleLog("Sent Stolperstein", protoStolperstein);
-    this.dataService.addOrUpdateStolperstein(protoStolperstein, this.getLocation()?.value.coordinates).subscribe(async (returnedStolperstein) => {
+    this.dataService.addOrUpdateStolperstein(protoStolperstein, this.getLocation()?.value.coordinates)
+    .pipe(takeUntil(this.destroy))
+    .subscribe(async (returnedStolperstein) => {
       Logger.consoleLog('Response: ', returnedStolperstein);
       if (!(returnedStolperstein as Stolperstein).id) {
         console.error("The response is not a valid Stolperstein!");
@@ -215,9 +268,15 @@ export class StolpersteinFormComponent implements OnInit {
       }
       if (this.isFilesChanged.general) {
         const steinId = (returnedStolperstein as Stolperstein).id;
-        stolpersteinAssets.append('stolperstein', steinId.toString())
+        stolpersteinAssets.append('stolperstein', steinId.toString());
         const response = await this.dataService.uploadStolpersteinAssets((returnedStolperstein as Stolperstein).id, stolpersteinAssets).toPromise();
         Logger.consoleLog("Asset upload returned: ", response);
+
+        if(response instanceof HttpResponse) {
+          if(response.status !== 200){
+            this.snackbar.open(response.statusText, 'Schließen', { duration: 4000 });
+          }
+        }
       }
       let isAdditionalInformation = false;
       const stolperstein = protoStolperstein;
@@ -432,6 +491,7 @@ export class StolpersteinFormComponent implements OnInit {
         'name': this.stolpersteinBasics.value.location.name,
         'coordinates': AppUtils.coordinatesToString(this.stolpersteinBasics.value.location.coordinates)
       } as StolpersteinLocationTransfer,
+      placementdate: StolpersteinFormComponent.parseDateToString(this.stolpersteinBasics.value.placementdate),
       birthdate: StolpersteinFormComponent.parseDateToString(this.stolpersteinBasics.value.birthdate),
       deathdate: StolpersteinFormComponent.parseDateToString(this.stolpersteinBasics.value.deathdate),
       birthplace: this.stolpersteinBasics.value.birthplace,
@@ -452,6 +512,10 @@ export class StolpersteinFormComponent implements OnInit {
       if (this.isFilesChanged.audio) {
         stolpersteinAssets.append('audioName', this.stolpersteinAssets.value.audioName);
         stolpersteinAssets.append('audio', this.stolpersteinAssets.value.audio);
+      }
+      if(this.isFilesChanged.video) {
+        stolpersteinAssets.append('videoName', this.stolpersteinAssets.value.videoName);
+        stolpersteinAssets.append('video', this.stolpersteinAssets.value.video);
       }
     }
     return stolpersteinAssets;

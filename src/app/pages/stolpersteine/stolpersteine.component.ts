@@ -1,21 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Coordinates } from 'src/app/models/coordinates';
 import { Stolperstein } from 'src/app/models/stolperstein';
 import { StolpersteinLocation } from 'src/app/models/stolpersteinLocation';
 import { DataService } from 'src/app/services/data/data.service';
 import { AppUtils } from 'src/app/util-config/app-utils';
 import { Logger } from 'src/app/util-config/logger';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-stolpersteine',
   templateUrl: './stolpersteine.component.html',
   styleUrls: ['./stolpersteine.component.scss']
 })
-export class StolpersteineComponent implements OnInit{
+export class StolpersteineComponent implements OnInit, OnDestroy {
 
   stolpersteinLocation?: StolpersteinLocation;
   existingStolperstein?: Stolperstein;
   loaded = false;
+  destroy = new Subject<void>();
+
   constructor(private activatedRoute: ActivatedRoute,
               private dataService: DataService,
               private router: Router,
@@ -27,7 +32,9 @@ export class StolpersteineComponent implements OnInit{
     const coordinates = this.activatedRoute.snapshot.paramMap.get('coordinates');
     let loadedFirst = false;
     if (locationId) {
-      this.dataService.getLocations().subscribe(locations => {
+      this.dataService.getLocations()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(locations => {
         const foundLoc = locations.find(loc => loc.id.toString() === locationId);
         if (foundLoc) {
           this.stolpersteinLocation = foundLoc;
@@ -36,7 +43,9 @@ export class StolpersteineComponent implements OnInit{
       });
     }
     if (stolpersteinId && coordinates) {
-      this.dataService.getLocations().subscribe(locations => {
+      this.dataService.getLocations()
+      .pipe(takeUntil(this.destroy))
+      .subscribe(locations => {
         const foundLoc = locations.find(loc => AppUtils.coordinatesToString(loc.coordinates) === coordinates);
         if (foundLoc)
           this.stolpersteinLocation = foundLoc;
@@ -59,7 +68,21 @@ export class StolpersteineComponent implements OnInit{
     }
   }
 
+  ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
+  }
+
   navigateBack() {
-    this.router.navigateByUrl(`/locations/${this.route.snapshot.paramMap.get("coordinates")}`);
+    // Reworked this so it works again
+    if(this.stolpersteinLocation?.coordinates){
+      const lat = this.stolpersteinLocation?.coordinates.latitude;
+      const lon = this.stolpersteinLocation?.coordinates.longitude;
+      this.router.navigateByUrl(`/locations/${lat},${lon}`);
+      //this.router.navigateByUrl(`/locations/${this.route.snapshot.paramMap.get("coordinates")}`);
+    }
+    else{
+      this.router.navigateByUrl(`/locations/list`);
+    }
   }
 }

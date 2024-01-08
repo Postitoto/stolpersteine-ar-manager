@@ -1,0 +1,50 @@
+<div>
+    <button mat-raised-button color="accent" routerLink="/tours/list" class="nav-button">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button color="accent" routerLink="/locations" class="nav-button">
+        <mat-icon>home</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" (click)="openLocationSelectionPopup()">
+        Standort hinzufügen
+    </button>
+</div>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+<h2>
+    {{selectedTour?.name}}
+</h2>
+
+<div cdkDropList class="drag-drop-list" (cdkDropListDropped)="dropLocation($event)">
+    <div cdkDrag class="drag-drop-item width-limiter tour-container" *ngFor="let location of locationsInTour; last as last; index as i">
+        <div class="button-container">
+            <button mat-raised-button class="location-button" (click)="toggleDetails(location.id)">
+                {{ location.name }}
+            </button>
+            <button mat-raised-button class="delete-button" (click)="removeLocationFromTour(location)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+        
+        <!-- Dropdown field -->
+        <div class="dropdown-content" *ngIf="expandedLocationId === location.id">
+            <mat-list-item role="listitem" class="auto-height">
+                <mat-label matLine class="spacing-right asset-label">Audio:</mat-label>
+                <p matLine *ngIf="expandedAudio"> {{expandedAudio.audioName}} </p>
+                <div class="center-content" matLine>
+                    <button mat-raised-button class="button-space-to-right" color="primary" (click)="audioInput.click()">
+                        <mat-icon>upload</mat-icon>Neue Audiodatei auswählen
+                    </button>
+                </div>
+                <input hidden #audioInput type="file" (change)="onAudioSelect($event)" accept=".mp3, .wav, .m4a, .wma">
+            </mat-list-item>
+        </div>
+    </div>
+</div>
+
+<div class="width-limiter">
+    <button mat-raised-button color="primary" (click)="saveSelection()">Speichern</button>
+    <span class="button-spacing"></span>
+    <button mat-raised-button color="accent" routerLink="/tours/list" class="nav-button">Abbrechen</button>
+</div>

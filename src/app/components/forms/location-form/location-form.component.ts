@@ -1,12 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Coordinates } from 'src/app/models/coordinates';
 import { StolpersteinLocationTransfer } from 'src/app/models/stolpersteinLocation';
 import { DataService } from 'src/app/services/data/data.service';
 import { MapInteractionService } from 'src/app/services/map-interaction/map-interaction.service';
-import { Logger } from 'src/app/util-config/logger';
+
 
 @Component({
   selector: 'app-location-form',
@@ -17,25 +15,32 @@ export class LocationFormComponent implements OnInit{
 
   locationForm: FormGroup;
   @Output() locationEmitter = new EventEmitter()
+  @Output() addStolperSteinEmitter = new EventEmitter()
 
   constructor(private formbuilder: FormBuilder,
               private dataService: DataService,
               private snackbar: MatSnackBar,
-              private mapInteraction: MapInteractionService) { 
+              private mapInteraction: MapInteractionService,) { 
     this.locationForm = this.formbuilder.group({
+      'name': ['', [Validators.required, Validators.maxLength(100)]],
       'coordinates_lat': ['', [Validators.required, Validators.maxLength(18)]],
       'coordinates_lon': ['', [Validators.required, Validators.maxLength(19)]],
-      'name': ['', [Validators.maxLength(100)]]
     });
   }
   
   ngOnInit(): void {
     this.mapInteraction.getCoordinates().subscribe(coordinates => {
-      this.locationForm.setValue({'name': this.locationForm.get('name')?.value, 
+      this.locationForm.setValue({
+        'name': this.locationForm.get('name')?.value, 
         'coordinates_lat': coordinates.latitude, 
-        'coordinates_lon': coordinates.longitude});
+        'coordinates_lon': coordinates.longitude,
+      });
     })
-    
+  }
+
+  addStolperStein(){
+    this.addStolperSteinEmitter.emit(true);
+    this.saveAndSend();
   }
 
   saveAndSend() {

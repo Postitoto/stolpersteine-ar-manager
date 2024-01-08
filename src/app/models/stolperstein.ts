@@ -10,6 +10,7 @@ export interface Stolperstein {
     name: string;
     location: StolpersteinLocation | StolpersteinLocationTransfer;
     files?: FileContainer;
+    placementdate?: string;
     birthdate?: string;
     deathdate?: string;
     birthplace?: string;

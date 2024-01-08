@@ -1,0 +1,37 @@
+<span class="spacing-right">
+    <button mat-raised-button color="accent" routerLink="/locations" class="button-space-to-right">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <button mat-raised-button color="primary" class="button-space-to-right" (click)="openLocationSelectionPopup()">
+        Neue Tour erstellen
+    </button>
+</span>
+<div class="small-padding-vertical">
+    <mat-divider></mat-divider>
+</div>
+
+
+<div *ngFor="let tour of tours; let i = index" class="tours-container">
+    <div class="button-container">
+        <button mat-raised-button class="tour-button" (click)="navigateToDetailView(tour)">
+            {{tour.name}}
+        </button>
+        <button mat-raised-button class="info-button" (click)="toggleDetails(tour.id)">
+            <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+    </div>
+
+    <div class="info-container" *ngIf="expandedTourId === tour.id">
+        <div class ="description-readonly">
+            <div class="description-text">{{ tour.description }}</div>
+        </div>
+
+        <div class="footer">
+            <button mat-raised-button class="delete-button" (click)="deleteTour(tour)">
+                <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+
+
+    </div>
+</div>

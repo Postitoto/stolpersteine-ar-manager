@@ -1,0 +1,15 @@
+<div class="popup-container">
+    <div *ngFor="let location of locations">
+        <label>
+            <input type="checkbox" [checked]="isSelected(location)" (change)="toggleLocationSelection(location)">
+        
+            {{ location.name }}
+
+        </label>
+    </div>
+
+    <div mat-dialog-actions class="center-content-always">
+        <button mat-raised-button color="primary" [mat-dialog-close]="selectedLocations">Bestätigen</button>
+        <button mat-raised-button color="warn" mat-dialog-close>Abbrechen</button>
+    </div>
+</div>

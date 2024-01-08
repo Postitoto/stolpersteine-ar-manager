@@ -2,7 +2,15 @@
     class="map" tabindex="1"></div>
 
 <div id="informationOverlay" class="informationOverlay">
-    <p> {{selectedLocation?.name}} </p>
-    <div class="btn-edit"><button mat-raised-button color="accent" (click)="openLocationDetails(selectedLocation)">Bearbeiten</button></div>
-    
+    <div class="overlay-title">
+        <p> {{selectedLocation?.name}} </p>
+    </div>
+    <div class="button-container">
+        <div>
+            <button class="overlay-btn" mat-raised-button color="accent" (click)="openLocationDetails(selectedLocation)">Bearbeiten</button>
+        </div>
+        <div>
+            <button class="overlay-btn" mat-raised-button color="warn" (click)="deleteLocation(selectedLocation)">Löschen</button>
+        </div>
+    </div>
 </div>
