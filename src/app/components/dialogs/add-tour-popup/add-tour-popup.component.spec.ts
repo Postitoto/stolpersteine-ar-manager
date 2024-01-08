@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TourFormComponent } from './tour-form.component';
+import { AddTourPopupComponent } from './add-tour-popup.component';
 
-describe('TourFormComponent', () => {
-  let component: TourFormComponent;
-  let fixture: ComponentFixture<TourFormComponent>;
+describe('AddTourPopupComponent', () => {
+  let component: AddTourPopupComponent;
+  let fixture: ComponentFixture<AddTourPopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TourFormComponent ]
+      declarations: [ AddTourPopupComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TourFormComponent);
+    fixture = TestBed.createComponent(AddTourPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

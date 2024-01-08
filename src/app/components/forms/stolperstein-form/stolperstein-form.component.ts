@@ -225,9 +225,9 @@ export class StolpersteinFormComponent implements OnInit, OnDestroy {
     this.isVideoFileToBig = false;
     const file = event.target.files[0];
     if(file) {
-      // Check file size because Cloudinary only allows up to 10MB in its free plan
+      // Check file size because Cloudinary only allows up to 100MB in its free plan
       const fileSizeInMB = (file.size / 1024) / 1024;
-      if(fileSizeInMB > 10) {
+      if(fileSizeInMB > 100) {
         this.isVideoFileToBig = true;
         this.stolpersteinAssets.value.video = null;
         this.stolpersteinAssets.value. videoName = null;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DataService } from 'src/app/services/data/data.service';
-import { Tour, TourLocation } from 'src/app/models/tour';
+import { Tour, TourLocation, TourLocationAudio } from 'src/app/models/tour';
 import { TourLocationOrderTransfer } from 'src/app/models/order';
 import { Logger } from 'src/app/util-config/logger';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -20,7 +20,7 @@ export class TourComponent implements OnInit {
   selectedTour?: Tour;
 
   tourLocations: TourLocation[] = [];
-  editedTourLocations: TourLocation[] = [];
+  tourLocationsFinal: TourLocation[] = [];
 
   initialLocations: StolpersteinLocation[] = [];
   locationsInTour: StolpersteinLocation[] = [];
@@ -28,7 +28,10 @@ export class TourComponent implements OnInit {
 
   orderArray: TourLocationOrderTransfer[] = [];
  
-  exapandedLocationId: number | null = null;
+  locationAudios: TourLocationAudio[] = [];
+
+  expandedLocationId: number | null = null;
+  expandedAudio: TourLocationAudio | undefined;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -86,7 +89,6 @@ export class TourComponent implements OnInit {
       if(value) {
         const locations = value as StolpersteinLocation[];
         this.addLocationsToTour(locations);
-        
       }
     });
   }
@@ -102,66 +104,111 @@ export class TourComponent implements OnInit {
   }
 
   toggleDetails(locId: number) {
-    this.exapandedLocationId = (this.exapandedLocationId === locId) ? null : locId;
+    if(this.expandedLocationId === locId) {
+      this.expandedLocationId = null;
+      this.expandedAudio = undefined;
+    } else {
+      this.expandedLocationId =  locId;
+      this.expandedAudio = this.locationAudios.find(x => x.location_id === this.expandedLocationId)
+    }
+  }
+
+  onAudioSelect(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if(this.expandedAudio) {
+          this.expandedAudio.audioFile = file;
+          this.expandedAudio.audioName = file.name;
+      } else {
+        const locAudio: TourLocationAudio = {
+          location_id: this.expandedLocationId,
+          audioName: file.name,
+          audioFile: file,
+        };
+        this.locationAudios.push(locAudio);
+      }
+    }
   }
 
   dropLocation(event: any) {
-    if (this.selectedTour?.locations) {
-      moveItemInArray(this.selectedTour.locations, event.previousIndex, event.currentIndex);
-      moveItemInArray(this.orderArray, event.previousIndex, event.currentIndex);
-      Logger.consoleLog("New Item Order: ", this.orderArray);
-    }
+    moveItemInArray(this.locationsInTour, event.previousIndex, event.currentIndex);
+    moveItemInArray(this.orderArray, event.previousIndex, event.currentIndex);
+    Logger.consoleLog("New Item Order: ", this.orderArray);
   }
 
   saveSelection() {
     if(this.selectedTour) {
-      // Array of locations that have been added
-      const addedIds = this.locationsInTour.filter(loc => !this.initialLocations.includes(loc)).map(loc => loc.id);
-      addedIds.forEach(id => this.addTourLocationObject(id))
+      // Adds a new TourLocation object to the request body for each location currently in the tour
+      this.locationsInTour.forEach(loc => this.addTourLocationObject(loc));
 
-      // Array of locations that have been removed
-      const removedIds = this.initialLocations.filter(loc => !this.locationsInTour.includes(loc)).map(loc => loc.id);
-      removedIds?.forEach(id => this.removeTourLocationObject(id))
+      // Since the backend doesn't delete entries in the look up table but just sets them inactive
+      // we need to create a TourLocation object for each removed location aswell.
+      // All this does is set_active to False and set the order to 0
+      const removed = this.initialLocations.filter(loc => !this.locationsInTour.includes(loc));
+      removed.forEach(loc => this.removeTourLocationObject(loc))
 
-      // We need to call this only when there's actually been data that changed
-      if(addedIds.length > 0 || removedIds.length > 0) {
-        this.dataService.editTourLocations(this.selectedTour?.id, this.editedTourLocations).subscribe(response => {
-          console.log(response);
-          this.router.navigateByUrl('tours/list');
-        })
-      }
-      else {
-        this.snackbar.open("Es wurden keine Änderungen vorgenommen", "Okay", {duration: 3000});
-      }
+      this.sendRequest(this.tourLocationsFinal);
     }
   }
 
-  addTourLocationObject(locationId: number): void {
-    const tourLocation = this.tourLocations.find(tl => tl.location_id === locationId)
+  sendRequest(data: TourLocation[]) {
+    const formData = new FormData();
+
+    data.forEach((tourLocation, index) => {
+      // Append fields to the FormData for each TourLocation
+      formData.append(`tour_${index}`, tourLocation.tour_id.toString());
+      formData.append(`location_${index}`, tourLocation.location_id.toString());
+      formData.append(`id_${index}`, tourLocation.id.toString());
+      formData.append(`order_${index}`, tourLocation.order.toString());
+      formData.append(`is_active_${index}`, tourLocation.is_active.toString());
+
+      if(tourLocation.audioFile) {
+        formData.append(`audioName_${index}`, tourLocation.audioFile.name);
+        formData.append(`audio_${index}`, tourLocation.audioFile);
+      }
+    });
+
+    if(this.selectedTour) {
+      this.dataService.editTourLocations(this.selectedTour?.id, formData).subscribe(response => {
+        this.snackbar.open("Änderungen wurden übernommen.", "Okay", {duration: 3000});
+        this.router.navigateByUrl('tours/list');
+      });
+    }
+   
+  }
+  
+  addTourLocationObject(location: StolpersteinLocation): void {
+    const order = this.locationsInTour.indexOf(location) + 1;
+    const tourLocation = this.tourLocations.find(tl => tl.location_id === location.id)
+    const audio = this.locationAudios.find(x => x.location_id === location.id)
 
     if(tourLocation) {
+      tourLocation.order = order;
+      tourLocation.audioFile = audio?.audioFile;
       tourLocation.is_active = true;
-      this.editedTourLocations.push(tourLocation);
+      this.tourLocationsFinal.push(tourLocation);
     }
     else if (this.selectedTour) {
       const newTourLocation: TourLocation = {
         id: 0, // This is necessary to inialize but the backend will over write this when saving it to the database
         tour_id: this.selectedTour?.id,
-        location_id: locationId,
-        order: 1,
+        location_id: location.id,
+        audioFile: audio?.audioFile,
+        order: order,
         is_active: true,
       };
 
-      this.editedTourLocations.push(newTourLocation);
+      this.tourLocationsFinal.push(newTourLocation);
     }
   }
 
-  removeTourLocationObject(locationId: number): void {
-    const tourLocation = this.tourLocations.find(tl => tl.location_id === locationId)
+  removeTourLocationObject(location: StolpersteinLocation): void {
+    const tourLocation = this.tourLocations.find(tl => tl.location_id === location.id)
 
     if(tourLocation) {
       tourLocation.is_active = false;
-      this.editedTourLocations.push(tourLocation);
+      tourLocation.order = 0;
+      this.tourLocationsFinal.push(tourLocation);
     }
   }
 
@@ -171,25 +218,19 @@ export class TourComponent implements OnInit {
         id: r.id,
         tour_id: r.tour,
         location_id: r.location,
+        audioFile: r.audio,
         order: r.order,
         is_active: r.is_active,
       };
 
+      const locAudio: TourLocationAudio = {
+        location_id: r.location,
+        audioName: r.audioName,
+        audioFile: r.audio,
+      };
+
       this.tourLocations.push(tourLocation);
+      this.locationAudios.push(locAudio);
     })
   }
-
-  saveLocationOrder() {
-    const orderSent: number[] = [];
-    this.orderArray.forEach(orderObj => orderSent.push(orderObj.location_id));
-    const requestBody = { order: orderSent };
-    /*this.dataService.updateOrder(this.location.coordinates, requestBody).subscribe((response) => {
-      Logger.consoleLog(response);
-      this.snackbar.open("Reihenfolge gespeichert!", "Bestätigen", { duration: 4000 });
-    }, (error) => {
-      Logger.consoleLog(error);
-      this.snackbar.open("Ein Fehler ist aufgetreten", "Bestätigen", { duration: 4000 });
-    });*/
-  }
-
 }

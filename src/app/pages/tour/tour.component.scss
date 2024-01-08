@@ -1,28 +1,33 @@
 
 .tour-container {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: rgb(236, 236, 236);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  margin: 12px auto;
+  border-radius: 8px;
+  }
+
+  .button-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .location-item {
-    width: 50%;
-    box-sizing: border-box;
-    background-color: rgb(236, 236, 236);
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
   }
 
   .location-button {
-    width: 100%;
+    flex: 1;
     background-color: rgb(221, 221, 221);
+    border-radius: 8px 0 0 8px;
   }
 
   .delete-button {
-    //width: 10%;
+    width: 40px;
     background-color: rgb(221, 221, 221);
+    border-radius: 0 8px 8px 0;
+    //margin-left: 10px;
   }
 
   .dropdown-content {

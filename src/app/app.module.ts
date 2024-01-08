@@ -48,7 +48,7 @@ import { TextboxFormComponent } from './components/forms/textbox-form/textbox-fo
 import { TourListComponent } from './pages/tour-list/tour-list.component';
 import { TourComponent } from './pages/tour/tour.component';
 import { AddLocationsPopupComponent } from './components/dialogs/add-locations-popup/add-locations-popup.component';
-import { TourFormComponent } from './components/forms/tour-form/tour-form.component';
+import { AddTourPopupComponent } from './components/dialogs/add-tour-popup/add-tour-popup.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +72,7 @@ import { TourFormComponent } from './components/forms/tour-form/tour-form.compon
     TourListComponent,
     TourComponent,
     AddLocationsPopupComponent,
-    TourFormComponent
+    AddTourPopupComponent
   ],
   imports: [
     BrowserModule,

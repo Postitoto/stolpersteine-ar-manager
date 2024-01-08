@@ -1,0 +1,56 @@
+
+.tours-container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    width: 50%;
+    box-sizing: border-box;
+    background-color: rgb(236, 236, 236);
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    margin: 12px auto;
+    border-radius: 8px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tour-button {
+    flex: 1;
+    background-color: rgb(221, 221, 221);
+    border-radius: 8px 0 0 8px;
+  }
+
+  .info-button {
+    width: 40px;
+    background-color: rgb(221, 221, 221);
+    border-radius: 0 8px 8px 0;
+  }
+
+  .description-readonly {
+    display: flex;
+    word-wrap: break-word; // Allow long words to break and wrap to the next line
+    overflow-y: auto; // Add a vertical scrollbar if the content is too long
+    padding: 5px;
+    background-color: rgb(240, 231, 231);
+    margin-top: 10px;
+  }
+
+  .description-text {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .footer {
+    margin-top: 20px;
+    display: flex;
+  }
+
+  .delete-button {
+    margin-left: auto;
+    background-color: rgb(250, 50, 50);
+  }
+
+ 

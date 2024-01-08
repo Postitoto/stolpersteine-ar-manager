@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { Coordinates } from 'src/app/models/coordinates';
 import { StolpersteinLocation, StolpersteinLocationTransfer } from 'src/app/models/stolpersteinLocation';
@@ -21,7 +21,6 @@ export class LocationsComponent implements OnInit {
   coordinatesForForm?: Coordinates;
   constructor(private dataService: DataService,
     private mapInteraction: MapInteractionService,
-    private cdRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,) {
     this.locations = [];

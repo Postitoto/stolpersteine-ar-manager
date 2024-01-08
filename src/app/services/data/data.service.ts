@@ -66,6 +66,14 @@ export class DataService {
   getLocationsInTour(id: number) {
     return this.http.get<StolpersteinLocation[]>(`${AppConfig.getBackendUrl()}/api/get-locations-in-tour/${id}`) as Observable<StolpersteinLocation[]>;
   }
+
+  addTour(requestBody: Tour) {
+    return this.http.post(`${AppConfig.getBackendUrl()}/api/add-tour/`, requestBody);
+  }
+
+  deleteTour(id: number) {
+    return this.http.delete(`${AppConfig.getBackendUrl()}/api/delete-tour/${id}`);
+  }
    
   addLocation(requestBody: StolpersteinLocationTransfer) {
     return this.http.post(`${AppConfig.getBackendUrl()}/api/add-location/`, requestBody);
@@ -93,10 +101,6 @@ export class DataService {
 
   editTourLocations(tourId: number, locations: any) {
     return this.http.post(`${AppConfig.getBackendUrl()}/api/edit-tour-locations/${tourId}`, locations)
-  }
-
-  removeLocationsFromTour(tourId: number, Locations: any) {
-    //return this.http.delete(``)
   }
 
   deleteStolperstein(coordinates: Coordinates | string, steinId: string) {
