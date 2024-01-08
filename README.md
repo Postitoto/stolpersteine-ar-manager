@@ -2,6 +2,13 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.2.9.
 
+## Installation Guide
+
+- Install NodeJS from their [website](https://nodejs.org/en/download) or alternativelly use the [Node Version Manager](https://linuxhint.com/downgrade-node-version-windows/) to install NodeJS version 14.21.3 (took me a long time to figure out wich node version is compatible with the project but this one works for me)
+- Install the node package manager and install the Angular CLI with "npm install -g @angular/cli"
+- Navigate to the GIT repository where this project is saved and execute the "npm install" command. This will install all the needed packages.
+- If everything worked the project should now be ready.
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
